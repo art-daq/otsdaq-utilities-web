@@ -161,6 +161,7 @@
 	<script type="text/JavaScript" src="/WebPath/js/Debug.js"></script>	
 	<script type="text/JavaScript" src="/WebPath/js/DesktopWindowContentCode.js"></script>
 	<script type="text/JavaScript" src="/WebPath/js/js_lib/SimpleContextMenu.js"></script>
+	<script type="text/JavaScript" src="/WebPath/js/js_lib/ConfigurationAPI.js"></script>
 	
 	<script>		
 		
@@ -224,7 +225,7 @@
 		var _version;
 		var _dataOffset = 0;
 		var _lastFindRow, _lastFindCol;
-		var _cachedTableComment;
+		var _cachedTableComment, _cachedGroupComment;
 		
 		var _firstTimeSilentActive = true;
 		var _useTableLinkDropdown = true;		
@@ -384,7 +385,7 @@
 			//changeMemberVersionForConfigGroup(groupName, configName, newVersion)
 		
 			//isTemporary(version)
-			//getDateString(date)
+			//ConfigurationAPI.getDateString(date)
 		
 			//setupFindAndReplace()
 			//configFind()
@@ -1413,6 +1414,28 @@
 					">";
 			str += "Alias</a><br>";
 			
+			//create group details
+			{
+				str += "<div id='groupDetails' style='display:block'>Group Details:";
+				var groupComment = DesktopContent.getXMLValue(req,"ConfigurationGroupComment");				
+				_cachedGroupComment = groupComment;
+				var groupAuthor = DesktopContent.getXMLValue(req,"ConfigurationGroupAuthor");
+				var groupCreationTime = DesktopContent.getXMLValue(req,"ConfigurationGroupCreationTime");
+				groupCreationTime = ConfigurationAPI.getDateString(new Date((groupCreationTime|0)*1000));
+				str += "<table border='0' style='" +
+						"border: 1px solid #9c5e5e;" +
+						"margin: 5px 0 5px 30px;" +
+						"background-color: #d2c1c1;" +
+						"'>";
+				str += "<tr><th>Author:</th><td class='underlineRow'>" + groupAuthor + "</td></tr>";
+				str += "<tr><th>Created:</th><td class='underlineRow'>" + groupCreationTime + "</td></tr>";				
+				str += "<tr><th>Comment:</th><td class='underlineRow'>" + 
+						groupComment.replace(/\n/g , "<br>") + "</td></tr>";
+				str += "</table>"
+						str += "</div>";
+
+				str += "<div id='clearDiv'></div>";
+			}
 			
 			if(historicalKeys.length)
 			{
@@ -1641,143 +1664,8 @@
 				str += cfgVersionStr;
 				str += "</div>";
 
-				str += "<br><br>";
+				str += "<br>";
 				str += "</td></tr>";
-
-//				str += "<table cellpadding='0' cellspacing='0' border='0' style='float:left;'><tr>"; //open pre/comment table row
-//				str += "<td>";
-//				str += "<div style='width:500px'>"; //open pre-comment div
-//				str += "<div style='float:left;'>";	//open name div
-//				str += "<a name='anchorTag-" + configName + "'></a>";
-//				str += "<b>" + niceName(configName) + "</b> ";
-//				
-//				str += "<a id='" + configName + "-currentVersionLink' " +
-//						"href='javascript:" + replaceScreenJS + "'>";
-//				str += "(Current version: ";
-//				str += "<label id='" + configName + "-currentVersion'>";					
-//				str +=	version;
-//				str += "</label>";
-//					
-//				str += ")";
-//				str += "</a>";
-//				str += "</div>"; //close member header
-//				
-//				//add member nav goto link
-//				{
-//					//make context menu
-//					groupMemberNavContextMenuItemHandlers = [];															 
-//					groupMemberNavContextMenuItemHandlers.push(replaceScreenJS);
-//
-//					//make new window link
-//					newWindowStr = "setupSpecificConfig(\"" + 
-//							configName + "\",\"" +
-//							version + "\")";
-//					newWindowStr = newWindowStr.replace(/"/g, "\\\"");
-//					newWindowStr = location.pathname + 
-//							location.search +
-//							"&newWindowOps=" + newWindowStr;
-//					newwindowJS = "DesktopContent.openNewWindow(" +
-//							"\"Configure\",\"\",\"" + 
-//							newWindowStr + "\",false);";
-//					groupMemberNavContextMenuItemHandlers.push(newwindowJS);
-//
-//					//make new tab link
-//					newtabJS = "DesktopContent.openNewBrowserTab(" +
-//							"\"Configure\",\"\",\"" + 
-//							newWindowStr + "\",false);";
-//					groupMemberNavContextMenuItemHandlers.push(newtabJS);
-//					
-//					str += //start member Link div
-//							"<div class='treeNode-Link' style='float:left;margin-top: 5px;'  " + 
-//							"onmousedown='" + // start link onmousedown	
-//							"SimpleContextMenu.createMenu(_treeNavContextMenuItems," +
-//							"[";
-//
-//					for(j=0;j<groupMemberNavContextMenuItemHandlers.length;++j)
-//					{
-//						//Debug.log("treeNavContextMenuItemHandlers[j]= " + treeNavContextMenuItemHandlers[j]);
-//						//need to escape all quotes by one more level
-//						groupMemberNavContextMenuItemHandlers[j] = groupMemberNavContextMenuItemHandlers[j].replace(/\\\"/g, "AAAAA");
-//						groupMemberNavContextMenuItemHandlers[j] = groupMemberNavContextMenuItemHandlers[j].replace(/"/g, "\\\"");
-//						groupMemberNavContextMenuItemHandlers[j] = groupMemberNavContextMenuItemHandlers[j].replace(/AAAAA/g, "\\\\\\\"");										
-//						//Debug.log("treeNavContextMenuItemHandlers[j]= " + treeNavContextMenuItemHandlers[j]);
-//						//Debug.log("this works= " + "Debug.log(\\\"hi\\\");");
-//						//THIS WORKS: treeViewHandlerStr_ += "\"" + "Debug.log(\\\"hi\\\");" + "\"";
-//						str += "\"" + groupMemberNavContextMenuItemHandlers[j] + "\"";
-//						if(j != groupMemberNavContextMenuItemHandlers.length-1)
-//							str += ",";
-//					}
-//					str += "]" + //end treeNavContextMenuItemHandlers array
-//							",\"groupMemberNavContextMenu\",event.pageX-1,event.pageY-1, " +
-//							"\"rgb(220, 187, 165)\", \"rgb(130, 51, 51)\");";					
-//					str += 
-//							"' " + // end link onmousedown
-//							//"onmouseup='" + onmouseupJS + "' " +
-//							">" +	
-//							"<div class='gotoNavDiv'></div>" +			
-//							"</div>"; //end nav Link					
-//				}
-//				
-//				str += "</div>"; //close pre-comment div
-//				str += "</td><td>";
-//				
-//				//add comment
-//				//make comment html safe
-//				configComment = configComment.replace(/</g, "&lt");
-//				configComment = configComment.replace(/>/g, "&gt");
-//				
-//				str += "<div id='" + configName + "-comment' " +
-//						"style='font-size:14px; margin:2px 0 0 20px; float:left; white-space: nowrap;'>";
-//				if(configComment != _DEFAULT_COMMENT) //do not show if default
-//					str += "//" + configComment;
-//				
-//				str += "</div>";
-//				str += "</td></tr></table>"; //close pre/comment table row
-//				
-//				//add prompt and existing versions
-//				str += "<div id='clearDiv'></div>";
-//				str += "Click below to change "  + niceName(configName) + 
-//					" Version for " + groupName + ":<br>";		
-//				
-//				str += "<div style='white-space:nowrap'>";
-//				str += "Existing versions: ";
-//				str += "<label id='" + configName + "-existingVersions'>";
-//				cfgVersionStr = ""; //keep CSV list of versions for use by changeMemberVersionForConfigGroup
-//				//str += version;
-//				//cfgVersionStr = version + ",";
-//				configExistingVersions = configVersions[i].getElementsByTagName("ConfigurationExistingVersion");
-//				var existingVersion;
-//				for(var j=0;j<configExistingVersions.length;++j)
-//				{
-//					existingVersion = configExistingVersions[j].getAttribute("value");
-//					if((existingVersion|0) < 0) //skip temporary versions
-//						continue;
-//					if(existingVersion == version) //skip link
-//					{
-//						cfgVersionStr += version + ",";
-//						str += " " + version; continue;
-//					}
-//					str += " ";
-//					str += "<a href='#' onclick='javascript:changeMemberVersionForConfigGroup(\"" +
-//							groupName + "\",\"" + configName + "\"," + 
-//							"\"" + existingVersion + "\"";
-//					str += "); return false;' " +
-//							"title='Select v" + existingVersion + " of table &apos;" +
-//							configName + "&apos; to be a member of the &apos;" + groupName + "&apos; group.' " +
-//							">" + existingVersion;
-//					str += "</a>";
-//					cfgVersionStr += existingVersion + ",";
-//				}			
-//				str += "</label>";	
-//				str += "</div>";
-//				
-//
-//				str += "<br><br>";
-//				
-//				//add div holding existing versions for modifications
-//				str += "<div id='" + configName + "-versions' style='display:none'>";
-//				str += cfgVersionStr;
-//				str += "</div>";
 				
 				cfgNameStr += configName + ",";							
 			}
@@ -2055,8 +1943,8 @@
 			
 					
 			//convert linux time to Date
-			tableCreationTime = getDateString(new Date((tableCreationTime|0)*1000)); 
-			tableLastAccessTime = getDateString(new Date((tableLastAccessTime|0)*1000)); 
+			tableCreationTime = ConfigurationAPI.getDateString(new Date((tableCreationTime|0)*1000)); 
+			tableLastAccessTime = ConfigurationAPI.getDateString(new Date((tableLastAccessTime|0)*1000)); 
 			
 			str += "<table border='0' style='" +
 					"border: 1px solid #9c5e5e;" +
@@ -2350,30 +2238,7 @@
 			el.style.display = _showTableDetails?"block":"none";
 		}
 		
-		//getDateString ~~
-		var dayArr_ = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-		var monthArr_ = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-		function getDateString(date)
-		{
-			var dateStr = "";
-
-			dateStr += dayArr_[date.getDay()];
-			dateStr += " ";
-			dateStr += monthArr_[date.getMonth()];
-			dateStr += " ";
-			dateStr += date.getDate();
-			dateStr += " ";
-			dateStr += date.getHours();
-			dateStr += ":";
-			dateStr += ((date.getMinutes()<10)?"0":"") + date.getMinutes();
-			dateStr += ":";
-			dateStr += ((date.getSeconds()<10)?"0":"") + date.getSeconds();
-			dateStr += " ";
-			dateStr += date.getFullYear();
-			dateStr += " ";
-			dateStr += date.toLocaleTimeString([],{timeZoneName: "short"}).split(" ")[2];
-			return dateStr;
-		}
+		
 		
 		//setVersionAliasInActiveBackbone ~~
 		//	Used to setup a table-alias.
@@ -2855,7 +2720,7 @@
 								"'></div>";								
 					}
 					else if(valueType == "Timestamp")				
-						treeViewHandlerStr_ += getDateString(new Date((value|0)*1000));						
+						treeViewHandlerStr_ += ConfigurationAPI.getDateString(new Date((value|0)*1000));						
 					else					
 						treeViewHandlerStr_ += value;
 											
@@ -9151,7 +9016,7 @@
 							{
 								if(c - _CONFIG_DATA_COL_OFFSET == 
 										_tableDefaultRowValues.length) //add date
-									newRowArr[c].innerHTML = getDateString(new Date());
+									newRowArr[c].innerHTML = ConfigurationAPI.getDateString(new Date());
 								else
 									newRowArr[c].innerHTML = 
 										_tableDefaultRowValues[c - _CONFIG_DATA_COL_OFFSET];
@@ -9192,7 +9057,7 @@
 							{
 								if(c - _CONFIG_DATA_COL_OFFSET == 
 										_tableDefaultRowValues.length) //add date
-									cols[c][newr].innerHTML = getDateString(new Date());
+									cols[c][newr].innerHTML = ConfigurationAPI.getDateString(new Date());
 								else
 									cols[c][newr].innerHTML = 
 										_tableDefaultRowValues[c - _CONFIG_DATA_COL_OFFSET];
