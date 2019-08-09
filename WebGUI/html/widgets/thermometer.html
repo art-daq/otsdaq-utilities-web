@@ -5,7 +5,7 @@
 		<style type="text/css">			
 			body {
 				background-color: rgb(41,46,55);
-				margin: 0px !important;
+				margin:0px !important;
 			}
 			a{
 				color: green;
@@ -15,7 +15,7 @@
 			div{
 			}
 			table{
-				border-spacing: 0px !important;
+				border-spacing:0px !important;
 			}
 			}
 			tr {
@@ -69,9 +69,12 @@
 					counter++;
 				}
 				
-				rows = Math.round(Math.sqrt(counter));
-				columns = Math.ceil(counter / rows);
+				if(counter<1)
+					++counter;
 				
+				var rows = Math.round(Math.sqrt(counter)); 
+				var columns = Math.ceil(counter / rows);
+
 				var hght = (parseInt(window.innerHeight) - 16) / rows;//((parseInt(window.innerHeight) - 26) * 0.9) / rows;
 				var wdth = (parseInt(window.innerWidth) - 16) / columns;
 
