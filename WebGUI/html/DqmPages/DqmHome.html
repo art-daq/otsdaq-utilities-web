@@ -1,7 +1,9 @@
 <!DOCTYPE HTML>
 <html lang="en">
 	<head>
-		<title>DQM GUI</title>
+		<title>DQM MOME PAGE</title>
+
+
 
 		<link rel="stylesheet" type="text/css" href="/WebPath/css/DqmPagesCss/DqmHome.css">
 
@@ -622,7 +624,7 @@
 				if(widget==actualGraphId_ && pvTime>lastPlotTime_)
 				{
 					lastPlotTime_ = pvTime;
-					drawGraph(widget, pvName, pvValue, pvTime, pvStatus, pvSeverity);
+					drawNewGraphValue(widget, pvName, pvValue, pvTime, pvStatus, pvSeverity);
 				}
 			} //end drawNewValue()
 
@@ -992,7 +994,7 @@
 	<body onload='//init() called by DesktopContent.js'>
 		
 		<div id="mainBlockContainer" height="auto" width="auto">
-			<h2 align="center">DAQ: Rack Status</h2>
+			<h2 align="center">Example Page</h2>
 			<div class="tableContainer" id="table" >
 				<table id="rackTable" align="left" border="1px">
 				</table>
