@@ -419,7 +419,9 @@
 				}
 
 				makeGraph();
-				getPvHistory(widget, plotParameters_);
+				var actualTime = Math.floor(Date.now())/1000;
+				var startTime = actualTime - 6*3600;
+				getPvHistory(widget, plotParameters_, startTime, actualTime);
 				actualGraphId_ = widget;
 			} //end drawGraph()
 
@@ -548,7 +550,7 @@
 
 
 			//=====================================================================================
-			function getPvHistory(widged, parameters)
+			function getPvHistory(widged, parameters, startTime, endTime)
 			{
 				var pvList = "";
 				
@@ -565,10 +567,12 @@
 				}
 
 				var passParams = [widged, parameters];
-				DesktopContent.XMLHttpRequest("Request?RequestType=getPVArchiverData",
+				DesktopContent.XMLHttpRequest("Request?RequestType=getPvArchiverData",
 									//post data 
 		    						"pvList=" + pvList + 
-									"&id=" + widged,
+									"&id=" + widged +
+									"&startTime=" + startTime +
+									"&endTime=" + endTime,
 									pvHistoryReqHandler /*handler*/,
 									 passParams /*parameter*/);
 				console.log("get history for widget! pvList: " + pvList);
